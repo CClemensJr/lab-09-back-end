@@ -11,7 +11,7 @@ require('dotenv').config();
 
 const PORT = process.env.PORT;
 
-const client = new pageXOffset.Client(process.env.DATABASE_URL);
+const client = new pg.Client(process.env.DATABASE_URL);
 client.connect();
 client.on('err', err => console.log(err));
 
@@ -28,6 +28,17 @@ app.get('/location', getLocation);
 // app.get('/weather', getWeather);
 // app.get('/yelp', getYelp);
 // app.get('/movies', getMovies);
+
+
+/**
+ * Error handler and port listener
+ */
+function handleError(err, res) {
+  console.error('ERR', err);
+  if (res) res.status(500).send('My apologies, something quite unexpected happened');
+}
+
+app.listen(PORT, () => console.log(`App is feeling fresh on PORT ${PORT}`));
 
 
 /**
@@ -78,7 +89,7 @@ function getLocation(request, response) {
     query: request.query.data,
 
     cacheHit: (results) => response.send(results.rows[0]),
-    
+
     cacheMiss: () => Location.fetchLocation(request.query.data).then(data => response.send(data))
   }
 
@@ -92,5 +103,5 @@ Location.lookupLocation = (handler) => {
 
   return client.query(SQL, values)
     .then(results => (results.rowCount > 0) ? handler.cacheHit(results) : handler.cacheMiss())
-    .catch(console.err); 
+    .catch(console.err);
 }
