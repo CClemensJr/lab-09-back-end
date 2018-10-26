@@ -69,3 +69,14 @@ Location.fetchLocation = (query) => {
       }
     });
 }
+
+
+
+Location.lookupLocation = (handler) => {
+  const SQL = `SELECT * FROM locations WHERE search_query=$1`;
+  const values = [handler.query];
+
+  return client.query(SQL, values)
+    .then(results => (results.rowCount > 0) ? handler.cacheHit(results) : handler.cacheMiss())
+    .catch(console.err); 
+}
