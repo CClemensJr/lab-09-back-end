@@ -1,0 +1,26 @@
+{
+  "name": "City Explorer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CClemensJr/lab-09-back-end.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CClemensJr/lab-09-back-end/issues"
+  },
+  "homepage": "https://github.com/CClemensJr/lab-09-back-end#readme",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "superagent": "^4.0.0-beta.5"
+  }
+}
