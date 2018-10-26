@@ -57,7 +57,7 @@ Location.prototype.save = function() {
   let SQL = `INSERT INTO locations (search_query,formatted_query,latitude,longitude) VALUES($1,$2,$3,$4)`;
   let values = Object.values(this);
 
-  clientInformation.query(SQL, values);
+  client.query(SQL, values);
 }
 
 
@@ -80,7 +80,8 @@ Location.fetchLocation = (query) => {
 
         return location;
       }
-    });
+    })
+    .catch( console.error );
 }
 
 
@@ -90,7 +91,7 @@ function getLocation(request, response) {
 
     cacheHit: (results) => response.send(results.rows[0]),
 
-    cacheMiss: () => Location.fetchLocation(request.query.data).then(data => response.send(data))
+    cacheMiss: () => Location.fetchLocation(request.query.data).then(data => response.send(data)).catch( console.error )
   }
 
   Location.lookupLocation(locationHandler);
