@@ -41,12 +41,14 @@ function Location(query, data) {
   this.longitude = data.geometry.location.lat;
 }
 
+
 Location.prototype.save = function() {
   let SQL = `INSERT INTO locations (search_query,formatted_query,latitude,longitude) VALUES($1,$2,$3,$4)`;
   let values = Object.values(this);
 
   clientInformation.query(SQL, values);
 }
+
 
 Location.fetchLocation = (query) => {
   const _URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
@@ -70,6 +72,18 @@ Location.fetchLocation = (query) => {
     });
 }
 
+
+function getLocation(request, response) {
+  const locationHandler = {
+    query: request.query.data,
+
+    cacheHit: (results) => response.send(results.rows[0]),
+    
+    cacheMiss: () => Location.fetchLocation(request.query.data).then(data => response.send(data))
+  }
+
+  Location.lookupLocation(locationHandler);
+}
 
 
 Location.lookupLocation = (handler) => {
