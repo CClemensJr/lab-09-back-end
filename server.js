@@ -41,7 +41,7 @@ function Location(query, data) {
   this.longitude = data.geometry.location.lat;
 }
 
-Location.prototype.save = function {
+Location.prototype.save = function() {
   let SQL = `INSERT INTO locations (search_query,formatted_query,latitude,longitude) VALUES($1,$2,$3,$4)`;
   let values = Object.values(this);
 
@@ -49,5 +49,23 @@ Location.prototype.save = function {
 }
 
 Location.fetchLocation = (query) => {
+  const _URL = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
 
+  return superagent.get(_URL)
+    .then((data) => {
+      console.log('Retrieved location api data');
+
+      if (!data.body.results.length)
+      {
+        throw 'No Data';
+      }
+      else
+      {
+        let location = new Location(query, data.body.results[0]);
+
+        location.save();
+
+        return location;
+      }
+    });
 }
